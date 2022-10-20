@@ -109,25 +109,25 @@ final class EPUBReflowableSpreadView: EPUBSpreadView {
     }
 
     private func updateContentInset() {
-        if (isScrollEnabled) {
-            topConstraint.constant = 0
-            bottomConstraint.constant = 0
-            scrollView.contentInset = UIEdgeInsets(top: notchAreaInsets.top, left: 0, bottom: notchAreaInsets.bottom, right: 0)
-            
-        } else {
-            var insets = contentInset[traitCollection.verticalSizeClass]
+//        if (isScrollEnabled) {  // TODO: figure out how to change contentInset only when tapped/untapped
+//            topConstraint.constant = 0
+//            bottomConstraint.constant = 0
+//            scrollView.contentInset = UIEdgeInsets(top: notchAreaInsets.top, left: 0, bottom: notchAreaInsets.bottom, right: 0)
+
+//        } else {
+        var insets = contentInset[traitCollection.verticalSizeClass]
                 ?? contentInset[.regular]
                 ?? contentInset[.unspecified]
                 ?? (top: 0, bottom: 0)
-            
-            // Increases the insets by the notch area (eg. iPhone X) to make sure that the content is not overlapped by the screen notch.
-            insets.top += notchAreaInsets.top
-            insets.bottom += notchAreaInsets.bottom
-            
-            topConstraint.constant = insets.top
-            bottomConstraint.constant = -insets.bottom
-            scrollView.contentInset = .zero
-        }
+
+        // Increases the insets by the notch area (eg. iPhone X) to make sure that the content is not overlapped by the screen notch.
+        insets.top += notchAreaInsets.top
+        insets.bottom += notchAreaInsets.bottom
+
+        topConstraint.constant = insets.top
+        bottomConstraint.constant = -insets.bottom
+        scrollView.contentInset = .zero
+//        }
     }
     
     override func convertPointToNavigatorSpace(_ point: CGPoint) -> CGPoint {
