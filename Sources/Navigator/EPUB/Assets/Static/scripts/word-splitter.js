@@ -10,7 +10,7 @@ const settings = {
     processedFlagAttribute: 'split-processed',
     absolute: false,
     tagName: 'span',
-    wordSeparator: /([^\w\d\p{L}]+)/g,
+    wordSeparator: /([^\w\d\p{L}'‘’‛]+)/g,
 }
 
 function split(node, startWordIdx = 0) {
