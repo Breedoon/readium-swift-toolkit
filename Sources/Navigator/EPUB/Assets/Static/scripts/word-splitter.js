@@ -1,8 +1,9 @@
 allWords = []
 
-document.addEventListener('DOMContentLoaded', function() {
-    // allWords = split(document.body)
-}, false);
+function splitBodyIntoWords(startWordIdx = 0) {
+    allWords = split(document.body, startWordIdx)
+}
+
 
 const settings = {
     wordClass: 'word',

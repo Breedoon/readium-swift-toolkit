@@ -713,6 +713,12 @@ extension EPUBNavigatorViewController: EPUBSpreadViewDelegate {
                 }
             }
         }
+
+        spreadView.evaluateScript("splitBodyIntoWords()") { result in
+            if case .failure(let error) = result {
+                self.log(.error, error)
+            }
+        }
     }
 
     func spreadView(_ spreadView: EPUBSpreadView, didTapAt point: CGPoint) {
