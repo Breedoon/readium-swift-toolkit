@@ -6,12 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 const settings = {
     wordClass: 'word',
+    wordGapClass: 'word-gap',
     absolute: false,
     tagName: 'span',
     wordSeparator: /([^\w\d\p{L}]+)/g,
 }
 
-function split(node) {
+function split(node, startWordIdx = 0) {
     const type = node.nodeType
     // Arrays of split words and characters
     const words = []
@@ -25,7 +26,7 @@ function split(node) {
     //    Split the text content of the node into words and/or characters
     //    return an object containing the split word and character elements
     if (type === 3) {
-        return splitWords(node)
+        return splitWords(node, startWordIdx)
     }
 
     // B) ELSE `node` is an 'Element'
@@ -33,38 +34,16 @@ function split(node) {
     //    recursively for each child node.
     const childNodes = toArray(node.childNodes)
 
-    if (childNodes.length) {
-        // we need to set a few styles on nested html elements
-        // if (!data.get(node).isRoot) {
-        //     node.style.display = 'inline-block'
-        //     node.style.position = 'relative'
-        //     // To maintain original spacing around nested elements when we are
-        //     // splitting text into lines, we need to check if the element should
-        //     // have a space before and after, and store that value for later.
-        //     // Note: this was necessary to maintain the correct spacing when nested
-        //     // elements do not align with word boundaries. For example, a nested
-        //     // element only wraps part of a word.
-        //     const nextSibling = node.nextSibling
-        //     const prevSibling = node.previousSibling
-        //     const text = node.textContent || ''
-        //     const textAfter = nextSibling ? nextSibling.textContent : ' '
-        //     const textBefore = prevSibling ? prevSibling.textContent : ' '
-        //     data.set(node, {
-        //         isWordEnd: /\s$/.test(text) || /^\s/.test(textAfter),
-        //         isWordStart: /^\s/.test(text) || /\s$/.test(textBefore),
-        //     })
-        // }
-    }
-
     // Iterate through child nodes, calling `split` recursively
     // Returns an object containing all split words and chars
     return childNodes.reduce((result, child) => {
-        const words = split(child)
-        return [...words, ...result]
+        const newWords = split(child, startWordIdx)
+        startWordIdx += newWords.length
+        return [...newWords, ...result]
     }, words)
 }
 
-function splitWords(textNode) {
+function splitWords(textNode, startWordIdx = 0) {
     // the tag name for split text nodes
     const TAG_NAME = settings.tagName
     // value of the text node
@@ -74,15 +53,16 @@ function splitWords(textNode) {
 
     // Arrays of split word and character elements
     let words = []
-
-    // if (/^\s/.test(VALUE)) {
-    //     splitText.append(' ')
-    // }
+    let wordIdx = startWordIdx
+    let isWord = true
 
     // Create an array of wrapped word elements.
     words = toWords(VALUE).reduce((result, WORD, idx, arr) => {
-        if (!WORD.length)
-            return result
+        if (!WORD.length) {  // first or last element will be empty only if string starts or ends with separator
+            isWord = false // so next element is a separator
+            return result  // don't add empty element anywhere
+        }
+        
         // Let `wordElement` be the wrapped element for the current word
         let wordElement
 
@@ -91,20 +71,28 @@ function splitWords(textNode) {
         //    splitting text into characters, the word element will contain the
         //    wrapped character nodes for this word. If not, it will contain the
         //    plain text content (WORD)
-        wordElement = createElement(TAG_NAME, {
-            class: `${settings.wordClass}`,
-            id: `word-${idx}`,
-            children: WORD,
-        })
+        if (isWord)
+            wordElement = createElement(TAG_NAME, {
+                class: settings.wordClass,
+                id: `word-${wordIdx}`,
+                children: WORD,
+            })
+        else  // this is a separator so make an element for it too
+            wordElement = createElement(TAG_NAME, {
+                class: settings.wordGapClass,
+                id: `pre-word-${wordIdx}`,
+                children: WORD,
+            })
+
         splitText.appendChild(wordElement)
-        // If not splitting text into words, we return an empty array
-        return result.concat(wordElement)
+        
+        wordIdx += isWord  // add word index counter if currently dealing with a word
+
+        // if this was a word, next element will be a separator and vice versa, so flip isWord
+        return (isWord = !isWord) ? // if this wasn't a word, don't append to result
+            result : result.concat(wordElement)
     }, []) // END LOOP;
 
-    // // Add a trailing white space to maintain word spacing
-    // if (/\s$/.test(VALUE)) {
-    //     splitText.append(' ')
-    // }
     textNode.replaceWith(splitText)
     return words
 }
