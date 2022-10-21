@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 const settings = {
     wordClass: 'word',
     wordGapClass: 'word-gap',
+    processedFlagAttribute: 'split-processed',
     absolute: false,
     tagName: 'span',
     wordSeparator: /([^\w\d\p{L}]+)/g,
@@ -32,6 +33,12 @@ function split(node, startWordIdx = 0) {
     // B) ELSE `node` is an 'Element'
     //    Iterate through its child nodes, calling the `split` function
     //    recursively for each child node.
+
+    // Mark element as processed so that if it's called again it doesn't resplit all the words
+    if (node.getAttribute(settings.processedFlagAttribute) != null)
+        return words
+    node.setAttribute(settings.processedFlagAttribute, "")
+
     const childNodes = toArray(node.childNodes)
 
     // Iterate through child nodes, calling `split` recursively
@@ -39,7 +46,7 @@ function split(node, startWordIdx = 0) {
     return childNodes.reduce((result, child) => {
         const newWords = split(child, startWordIdx)
         startWordIdx += newWords.length
-        return [...newWords, ...result]
+        return [...result, ...newWords]
     }, words)
 }
 
