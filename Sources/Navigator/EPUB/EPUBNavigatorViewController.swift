@@ -886,7 +886,7 @@ extension EPUBNavigatorViewController: PaginationViewDelegate {
             resourcesURL: resourcesURL,
             readingProgression: readingProgression,
             userSettings: userSettings,
-            scripts: [],
+            scripts: [WKUserScript(source: EPUBSpreadView.loadScript(named: "word-splitter"), injectionTime: .atDocumentEnd, forMainFrameOnly: false)],
             animatedLoad: false,  // FIXME: custom animated
             editingActions: editingActions,
             contentInset: config.contentInset
