@@ -1,9 +1,33 @@
 allWords = []
+let prevHighlightedEl = document.createElement("dummy")
 
 function splitBodyIntoWords(startWordIdx = 0) {
     allWords = split(document.body, startWordIdx)
 }
 
+function getSelectedWord() {
+    let anchorNode = window.getSelection().anchorNode
+    window.getSelection().removeAllRanges() // clear selection
+    if (!anchorNode)
+        return null
+    if (anchorNode.nodeType == 3)  // is a text node (most likely) so get its parent
+        anchorNode = anchorNode.parentElement
+    if (!anchorNode.id) // no id
+        return null
+    match = anchorNode.id.match(/^(?:pre\-)?word\-(\d+)$/)
+    if (!match)
+        return null
+    return parseInt(match[1])  // the id group
+}
+
+function highlightWordIdx(wordIdx, highlightColor="rgba(255, 255, 0, 0.3)") {
+    let newWord = document.getElementById(`word-${wordIdx}`)
+    if (!newWord)
+        console.log("Error: Word not found")
+    newWord.style.background = highlightColor
+    prevHighlightedEl.style.background = ""
+    prevHighlightedEl = newWord
+}
 
 const settings = {
     wordClass: 'word',
