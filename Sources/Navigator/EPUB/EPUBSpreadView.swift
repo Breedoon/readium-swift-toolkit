@@ -34,7 +34,11 @@ protocol EPUBSpreadViewDelegate: AnyObject {
     func spreadView(_ spreadView: EPUBSpreadView, present viewController: UIViewController)
 }
 
-class EPUBSpreadView: UIView, Loggable, PageView {
+public protocol JSExecutable {
+    func evaluateScript(_ script: String, inHREF href: String?, completion: ((Result<Any, Error>) -> Void)?)
+}
+
+class EPUBSpreadView: UIView, Loggable, PageView, JSExecutable {
 
     weak var delegate: EPUBSpreadViewDelegate?
     let publication: Publication

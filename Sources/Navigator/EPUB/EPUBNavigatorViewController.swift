@@ -29,7 +29,7 @@ public protocol EPUBNavigatorDelegate: VisualNavigatorDelegate, SelectableNaviga
     /// Implement `NavigatorDelegate.navigator(presentError:)` instead.
     func presentError(_ error: NavigatorError)
 
-    func spreadViewDidLoad()
+    func spreadViewDidLoad(_ spreadView: JSExecutable)
 
 }
 
@@ -716,14 +716,9 @@ extension EPUBNavigatorViewController: EPUBSpreadViewDelegate {
             }
         }
 
-        spreadView.evaluateScript("splitBodyIntoWords()") { result in
-            if case .failure(let error) = result {
-                self.log(.error, error)
-            }
-        }
         if let currLoc = self.currentLocation {  // TODO: find a better way to find if loaded current spread
             if currLoc.href == spreadView.spread.links[0].href {
-                self.delegate?.spreadViewDidLoad()
+                self.delegate?.spreadViewDidLoad(spreadView)
             }
         }
     }
