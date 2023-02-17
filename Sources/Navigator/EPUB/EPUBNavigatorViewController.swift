@@ -720,11 +720,8 @@ extension EPUBNavigatorViewController: EPUBSpreadViewDelegate {
             }
         }
 
-        if let currLoc = self.currentLocation {  // TODO: find a better way to find if loaded current spread
-            if currLoc.href == spreadView.spread.links[0].href {
-                self.delegate?.spreadViewDidLoad(spreadView)
-            }
-        }
+        self.delegate?.spreadViewDidLoad(spreadView)
+
     }
 
     func spreadView(_ spreadView: EPUBSpreadView, didTapAt point: CGPoint) {
