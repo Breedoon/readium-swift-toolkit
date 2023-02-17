@@ -29,7 +29,7 @@ public protocol EPUBNavigatorDelegate: VisualNavigatorDelegate, SelectableNaviga
     /// Implement `NavigatorDelegate.navigator(presentError:)` instead.
     func presentError(_ error: NavigatorError)
 
-    func spreadViewDidLoad(_ spreadView: JSExecutable)
+    func spreadViewDidLoad(_ spreadView: EPUBSpreadAPI)
 
 }
 
@@ -416,6 +416,10 @@ open class EPUBNavigatorViewController: UIViewController, VisualNavigator, Selec
     
     private let paginationView: PaginationView
     private var spreads: [EPUBSpread] = []
+
+    public func getSpreadLinks() -> [Link] {
+        self.spreads.flatMap { spread in spread.links[0] }
+    }
 
     /// Index of the currently visible spread.
     private var currentSpreadIndex: Int {

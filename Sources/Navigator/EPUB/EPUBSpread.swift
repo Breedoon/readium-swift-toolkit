@@ -25,7 +25,7 @@ struct EPUBSpread: Loggable {
 
     /// Links for the resources displayed in the spread, in reading order.
     /// Note: it's possible to have less links than the amount of `pageCount` available, because a single page might be displayed in a two-page spread (eg. with Properties.Page center, left or right)
-    let links: [Link]
+    public let links: [Link]
     
     /// Spread reading progression direction.
     let readingProgression: ReadingProgression

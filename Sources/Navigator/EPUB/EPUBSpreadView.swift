@@ -34,11 +34,12 @@ protocol EPUBSpreadViewDelegate: AnyObject {
     func spreadView(_ spreadView: EPUBSpreadView, present viewController: UIViewController)
 }
 
-public protocol JSExecutable {
+public protocol EPUBSpreadAPI {
     func evaluateScript(_ script: String, inHREF href: String?, completion: ((Result<Any, Error>) -> Void)?)
+    func getLink() -> Link
 }
 
-class EPUBSpreadView: UIView, Loggable, PageView, JSExecutable {
+class EPUBSpreadView: UIView, Loggable, PageView, EPUBSpreadAPI {
 
     weak var delegate: EPUBSpreadViewDelegate?
     let publication: Publication
@@ -428,6 +429,10 @@ class EPUBSpreadView: UIView, Loggable, PageView, JSExecutable {
     class func loadScript(named name: String) -> String {
         return Bundle.module.url(forResource: "\(name)", withExtension: "js", subdirectory: "Assets/Static/scripts")
             .flatMap { try? String(contentsOf: $0) }!
+    }
+
+    func getLink() -> Link {
+        return self.spread.links[0]
     }
 }
 
