@@ -865,6 +865,10 @@ extension EPUBNavigatorViewController: EPUBSpreadViewDelegate {
         present(viewController, animated: true)
     }
 
+    public func getCurrentView() -> EPUBSpreadAPI? {
+        return self.paginationView.currentView as? EPUBSpreadAPI
+    }
+
 }
 
 extension EPUBNavigatorViewController: EditingActionsControllerDelegate {

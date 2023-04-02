@@ -37,6 +37,7 @@ protocol EPUBSpreadViewDelegate: AnyObject {
 public protocol EPUBSpreadAPI {
     func evaluateScript(_ script: String, inHREF href: String?, completion: ((Result<Any, Error>) -> Void)?)
     func getLink() -> Link
+    func getWebView() -> WKWebView
 }
 
 class EPUBSpreadView: UIView, Loggable, PageView, EPUBSpreadAPI {
@@ -433,6 +434,10 @@ class EPUBSpreadView: UIView, Loggable, PageView, EPUBSpreadAPI {
 
     func getLink() -> Link {
         return self.spread.links[0]
+    }
+
+    func getWebView() -> WKWebView {
+        return self.webView
     }
 }
 
